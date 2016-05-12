@@ -171,7 +171,7 @@ $(document).ready(function(){
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
 			request(file, 'POST', http.list);
 		}
-		else{alert('Por favor escreva os dados referentes ao produto')}
+		else{alert('Por favor reveja os dados referentes ao produto.')}
 	})
 	$('#update').click(function(){
 		var file=dataFile();
@@ -185,21 +185,21 @@ $(document).ready(function(){
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
 			request(file, 'PUT', http.product+$('#selecionar').val());
 		}
-		else{alert('Por favor escreva os dados referentes ao produto')}
+		else{alert('Por favor reveja os dados referentes ao produto.')}
 	})
 	$('#name').keyup(function(){
 		var nome=$(this).val();
-		var result=nome.replace(/[0-9]/g, '');
+		var result=nome.replace(/[^a-zçáâãéêíóôõú]/g, '');
 		$(this).val(result);
 	})
 	$('#value').keyup(function(){
 		var nome=$(this).val();
-		var result=nome.replace(/[a-z]/g, '');
+		var result=nome.replace(/[^0-9.]/g, '');
 		$(this).val(result);
 	})
 	$('#quantity').keyup(function(){
 		var nome=$(this).val();
-		var result=nome.replace(/[a-z]/g, '');
+		var result=nome.replace(/[^0-9]/g, '');
 		$(this).val(result);
 	})
 })
