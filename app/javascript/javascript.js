@@ -70,6 +70,28 @@ function selectFilter(){
 	else if(selectValue>0) {showContent(false, http.product+selectValue);}
 }
 
+function dataFile(){
+	var file={
+		nome: $('#name').val(),
+		valor: $('#value').val(),
+		status: $('input[name=status]:checked').val(),
+		estoque: $('#quantity').val()
+	}
+	return file;
+}
+
+function request(file, type, url){
+	$.ajax({
+		url: url,
+		type: type,
+		data: file,
+		success: function(){
+			updateAll();
+			clear('#table');
+		}
+	})
+}
+
 function remove(selectValue){
 	var value=$('#selecionar').val();
 	$.ajax({
@@ -78,8 +100,6 @@ function remove(selectValue){
 		success: function(){
 			updateAll();
 			clear('#table');
-			addCssClass(['#update', '#delete'], 'hide');
-			removeCssClass(['#create'], 'hide');
 		}
 	})
 }
@@ -91,6 +111,13 @@ $(document).ready(function(){
 	});
 	$('#delete').click(function(){
 		remove();
+	})
+	$('#create').click(function(){
+		clear('#table');
+	})
+	$('#send').click(function(){
+		var file=dataFile();
+		request(file, 'POST', http.list);
 	})
 
 })

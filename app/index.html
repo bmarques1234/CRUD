@@ -13,6 +13,13 @@
 			<select id="selecionar" class="size"></select>
 			<div id="conteudo" class="size">
 				<table id="table"></table>
+				<form id="form" class="hide">
+					<input type="text" placeholder="Nome" id="name" class="size"></input><br/>
+					<input type="text" placeholder="Valor" id="value" class="size"></input><br/>
+					<input type="text" placeholder="Estoque" id="quantity" class="size"></input><br/>
+					<input type="radio" name="status" value="A" id="ativo" checked="true"><span class="white">Ativo</span></input>
+					<input type="radio" name="status" value="I" id="inativo"><span class="white">Inativo</span></input>
+				</form>
 			</div>
 			<button id="create" class="size">Adicionar</button>
 			<button id="delete" class="hide">Deletar</button>
