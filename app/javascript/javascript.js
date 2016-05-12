@@ -142,6 +142,7 @@ function remove(selectValue){
 			clear('#table');
 			addCssClass(['#update', '#delete'], 'hide');
 			removeCssClass(['#create'], 'hide');
+			updateForm('');
 		}
 	})
 }
