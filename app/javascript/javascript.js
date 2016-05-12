@@ -147,6 +147,10 @@ function remove(selectValue){
 	})
 }
 
+function replace(pattern, replacement, subject){
+	return subject.replace(pattern, replacement);
+}
+
 $(document).ready(function(){
 	updateAll();
 	$('#selecionar').change(function(){
@@ -163,7 +167,11 @@ $(document).ready(function(){
 	})
 	$('#send').click(function(){
 		var file=dataFile();
-		request(file, 'POST', http.list);
+		form=dataFile();
+		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
+			request(file, 'POST', http.list);
+		}
+		else{alert('Por favor escreva os dados referentes ao produto')}
 	})
 	$('#update').click(function(){
 		var file=dataFile();
@@ -174,16 +182,24 @@ $(document).ready(function(){
 	})
 	$('#edit').click(function(){
 		var file=dataFile();
-		request(file, 'PUT', http.product+$('#selecionar').val());
+		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
+			request(file, 'PUT', http.product+$('#selecionar').val());
+		}
+		else{alert('Por favor escreva os dados referentes ao produto')}
 	})
-	$('#name').keypress(function(){
-		//$('#name').val().replace(/[^\d]+/g,'')
+	$('#name').keyup(function(){
+		var nome=$(this).val();
+		var result=nome.replace(/[0-9]/g, '');
+		$(this).val(result);
 	})
-	$('#value').keypress(function(){
-		
+	$('#value').keyup(function(){
+		var nome=$(this).val();
+		var result=nome.replace(/[a-z]/g, '');
+		$(this).val(result);
 	})
-	$('#quantity').keypress(function(){
-		
+	$('#quantity').keyup(function(){
+		var nome=$(this).val();
+		var result=nome.replace(/[a-z]/g, '');
+		$(this).val(result);
 	})
-
 })
