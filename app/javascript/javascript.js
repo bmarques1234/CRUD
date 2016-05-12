@@ -3,6 +3,18 @@ var http={
 	product: 'http://localhost:3000/product/'
 };
 
+function removeCssClass(itens, classe){
+	for(var c=0; c<itens.length; c++){
+		$(itens[c]).removeClass(classe);
+	}
+}
+
+function addCssClass(itens, classe){
+	for(var c=0; c<itens.length; c++){
+		$(itens[c]).addClass(classe);
+	}
+}
+
 function clear(id){
 	$(id).html('');
 	removeCssClass(['#conteudo'], 'content');
@@ -66,13 +78,19 @@ function showContent(allData, url){
 			updateProduct(data);
 			$('#selecionar').val('todos');
 			result=implementAllContent(data);
+			removeCssClass(['#create'], 'hide');
+			addCssClass(['#delete', '#update', '#send', '#edit'], 'hide');
 			updateForm('');
 		}
 		else{
 			result=implementContent(data);
+			removeCssClass(['#delete', '#update'], 'hide');
+			addCssClass(['#delete', '#update', '#create'], 'size');
+			addCssClass(['#create', '#send', '#edit'], 'hide');
 			updateForm(data);
 		}
 		$('#table').append(result);
+		addCssClass(['#conteudo'], 'content');
 	})
 }
 
@@ -156,4 +174,14 @@ $(document).ready(function(){
 		var file=dataFile();
 		request(file, 'PUT', http.product+$('#selecionar').val());
 	})
+	$('#name').keypress(function(){
+		//$('#name').val().replace(/[^\d]+/g,'')
+	})
+	$('#value').keypress(function(){
+		
+	})
+	$('#quantity').keypress(function(){
+		
+	})
+
 })
