@@ -101,6 +101,7 @@ function selectFilter(){
 		addCssClass(['#send', '#edit', '#delete', '#update'], 'hide');
 		removeCssClass(['#create'], 'hide');
 		clear('#table');
+		updateForm('');
 	}
 	else if(selectValue==='todos') {showContent(true, http.list);}
 	else if(selectValue>0) {showContent(false, http.product+selectValue);}
