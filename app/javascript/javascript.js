@@ -5,12 +5,28 @@ var http={
 
 function clear(id){
 	$(id).html('');
+	removeCssClass(['#conteudo'], 'content');
 }
 
 function updateAll(){
 	$.getJSON(http.list, function(data){
 		updateProduct(data);
 	});
+}
+
+function updateForm(data){
+	if(data!==''){
+		$('#name').val(data.nome);
+		$('#value').val(data.valor);
+		$('input[value='+data.status+']').prop('checked', true);
+		$('#quantity').val(data.estoque);
+	}
+	else{
+		$('#name').val('');
+		$('#value').val('');
+		$('input[value=A]').prop('checked', true);
+		$('#quantity').val('');
+	}
 }
 
 function updateProduct(data){
@@ -50,13 +66,13 @@ function showContent(allData, url){
 			updateProduct(data);
 			$('#selecionar').val('todos');
 			result=implementAllContent(data);
+			updateForm('');
 		}
 		else{
 			result=implementContent(data);
-			removeCssClass(['#delete', '#update'], 'hide');
+			updateForm(data);
 		}
 		$('#table').append(result);
-		addCssClass(['#conteudo'], 'content');
 	})
 }
 
@@ -140,5 +156,4 @@ $(document).ready(function(){
 		var file=dataFile();
 		request(file, 'PUT', http.product+$('#selecionar').val());
 	})
-
 })
