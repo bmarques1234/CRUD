@@ -7,6 +7,12 @@ function clear(id){
 	$(id).html('');
 }
 
+function updateAll(){
+	$.getJSON(http.list, function(data){
+		updateProduct(data);
+	});
+}
+
 function updateProduct(data){
 	clear('#selecionar');
 	var options='<option selected value="select">Selecione um produto...</option>';options+='<option value="todos">todos</option>';
@@ -53,8 +59,11 @@ function showContent(allData, url){
 }
 
 function selectFilter(){
+	addCssClass(['#form', '#send'], 'hide');
 	var selectValue=$('#selecionar').val();
 	if(selectValue==='select'){
+		addCssClass(['#send', '#edit', '#delete', '#update'], 'hide');
+		removeCssClass(['#create'], 'hide');
 		clear('#table');
 	}
 	else if(selectValue==='todos') {showContent(true, http.list);}
@@ -80,5 +89,8 @@ $(document).ready(function(){
 	$('#selecionar').change(function(){
 		selectFilter();
 	});
+	$('#delete').click(function(){
+		remove();
+	})
 
 })
