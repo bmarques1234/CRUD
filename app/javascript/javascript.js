@@ -53,8 +53,10 @@ function showContent(allData, url){
 		}
 		else{
 			result=implementContent(data);
+			removeCssClass(['#delete', '#update'], 'hide');
 		}
 		$('#table').append(result);
+		addCssClass(['#conteudo'], 'content');
 	})
 }
 
@@ -88,8 +90,11 @@ function request(file, type, url){
 		success: function(){
 			updateAll();
 			clear('#table');
+			removeCssClass(['#create'], 'hide');
+			updateForm('');
 		}
 	})
+	addCssClass(['#form', '#send', '#edit'], 'hide');
 }
 
 function remove(selectValue){
@@ -100,6 +105,8 @@ function remove(selectValue){
 		success: function(){
 			updateAll();
 			clear('#table');
+			addCssClass(['#update', '#delete'], 'hide');
+			removeCssClass(['#create'], 'hide');
 		}
 	})
 }
@@ -114,10 +121,24 @@ $(document).ready(function(){
 	})
 	$('#create').click(function(){
 		clear('#table');
+		removeCssClass(['#form', '#send'], 'hide');
+		addCssClass(['#form', '#create', '#send'], 'size');
+		addCssClass(['#create'], 'hide');
 	})
 	$('#send').click(function(){
 		var file=dataFile();
 		request(file, 'POST', http.list);
+	})
+	$('#update').click(function(){
+		var file=dataFile();
+		removeCssClass(['#form', '#edit'], 'hide');
+		addCssClass(['#form', '#update', '#edit'], 'size');
+		addCssClass(['#update', '#delete'], 'hide');
+		clear('#table');
+	})
+	$('#edit').click(function(){
+		var file=dataFile();
+		request(file, 'PUT', http.product+$('#selecionar').val());
 	})
 
 })
