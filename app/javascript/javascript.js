@@ -1,8 +1,12 @@
-/*var http={
-	list:'http://localhost:3000/product',
-	product: 'http://localhost:3000/product/'
-};*/
 var http='http://localhost:3000/product/';
+var message={
+	emptyField: 'Por favor reveja os dados referentes ao produto.',
+	inactiveProduct: 'Este produto não está ativo'
+}
+var select={
+	select: '<option selected value="select">Selecione um produto...</option>',
+	all: '<option value="todos">todos</option>'
+}
 
 function removeCssClass(itens, classe){
 	for(var c=0; c<itens.length; c++){
@@ -44,7 +48,7 @@ function updateForm(data){
 
 function updateProducts(data){
 	clear('#selecionar');
-	var options='<option selected value="select">Selecione um produto...</option>';options+='<option value="todos">todos</option>';
+	var options=select.select+select.all;
 	$('#selecionar').append(options);
 	for (var c=0;c<data.length;c++){
 		if(data[c].status==='I') {options='<option value='+data[c].id+' style="color:red">'+data[c].nome+'</option>';}
@@ -66,7 +70,7 @@ function implementAllContent(data){
 function implementContent(data){
 	var result;
 	result+='<tr>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
-	if(data.status==='I') {result+='<tr><td colspan="4" style="color:red">Este produto não está ativo</td></tr>';}
+	if(data.status==='I') {result+='<tr><td colspan="4" style="color:red">'+message.inactiveProduct+'</td></tr>';}
 	return result;
 }
 
@@ -160,7 +164,7 @@ $(document).ready(function(){
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
 			request(file, 'POST', http);
 		}
-		else{alert('Por favor reveja os dados referentes ao produto.')}
+		else{alert(message.emptyField)}
 	})
 	$('#update').click(function(){
 		var file=dataFile();
@@ -174,7 +178,7 @@ $(document).ready(function(){
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
 			request(file, 'PUT', http+$('#selecionar').val());
 		}
-		else{alert('Por favor reveja os dados referentes ao produto.')}
+		else{alert(message.emptyField)}
 	})
 	$('#name').keyup(function(){
 		regEx(/[^a-zçáâãéêíóôõú]/g, this);
