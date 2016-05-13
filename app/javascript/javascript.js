@@ -133,6 +133,12 @@ function request(file, type, url){
 	updateForm('');
 }
 
+function regEx(expression, input){
+	var nome=$(input).val();
+	var result=nome.replace(expression, '');
+	$(input).val(result);
+}
+
 $(document).ready(function(){
 	updateSelect();
 	$('#selecionar').change(function(){
@@ -171,18 +177,12 @@ $(document).ready(function(){
 		else{alert('Por favor reveja os dados referentes ao produto.')}
 	})
 	$('#name').keyup(function(){
-		var nome=$(this).val();
-		var result=nome.replace(/[^a-zçáâãéêíóôõú]/g, '');
-		$(this).val(result);
+		regEx(/[^a-zçáâãéêíóôõú]/g, this);
 	})
 	$('#value').keyup(function(){
-		var nome=$(this).val();
-		var result=nome.replace(/[^0-9.]/g, '');
-		$(this).val(result);
+		regEx(/[^0-9.]/g, this);
 	})
 	$('#quantity').keyup(function(){
-		var nome=$(this).val();
-		var result=nome.replace(/[^0-9]/g, '');
-		$(this).val(result);
+		regEx(/[^0-9]/g, this);
 	})
 })
