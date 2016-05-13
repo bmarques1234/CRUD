@@ -1,7 +1,8 @@
-var http={
+/*var http={
 	list:'http://localhost:3000/product',
 	product: 'http://localhost:3000/product/'
-};
+};*/
+var http='http://localhost:3000/product/';
 
 function removeCssClass(itens, classe){
 	for(var c=0; c<itens.length; c++){
@@ -20,9 +21,9 @@ function clear(id){
 	removeCssClass(['#conteudo'], 'content');
 }
 
-function updateAll(){
-	$.getJSON(http.list, function(data){
-		updateProduct(data);
+function updateSelect(){
+	$.getJSON(http, function(data){
+		updateProducts(data);
 	});
 }
 
@@ -41,7 +42,7 @@ function updateForm(data){
 	}
 }
 
-function updateProduct(data){
+function updateProducts(data){
 	clear('#selecionar');
 	var options='<option selected value="select">Selecione um produto...</option>';options+='<option value="todos">todos</option>';
 	$('#selecionar').append(options);
@@ -75,7 +76,7 @@ function showContent(allData, url){
 		var result='<tr><th>Nome</th>'+'<th>Valor</th>'+'<th>Status</th>'+'<th>Estoque</th></tr>';
 		$('#table').append(result);
 		if(allData===true){
-			updateProduct(data);
+			updateProducts(data);
 			$('#selecionar').val('todos');
 			result=implementAllContent(data);
 			removeCssClass(['#create'], 'hide');
@@ -103,8 +104,8 @@ function selectFilter(){
 		clear('#table');
 		updateForm('');
 	}
-	else if(selectValue==='todos') {showContent(true, http.list);}
-	else if(selectValue>0) {showContent(false, http.product+selectValue);}
+	else if(selectValue==='todos') {showContent(true, http);}
+	else if(selectValue>0) {showContent(false, http+selectValue);}
 }
 
 function dataFile(){
@@ -123,41 +124,23 @@ function request(file, type, url){
 		type: type,
 		data: file,
 		success: function(){
-			updateAll();
-			clear('#table');
-			removeCssClass(['#create'], 'hide');
-			updateForm('');
+			updateSelect();
 		}
 	})
-	addCssClass(['#form', '#send', '#edit'], 'hide');
-}
-
-function remove(selectValue){
-	var value=$('#selecionar').val();
-	$.ajax({
-		url: http.product+value,
-		type: 'DELETE',
-		success: function(){
-			updateAll();
-			clear('#table');
-			addCssClass(['#update', '#delete'], 'hide');
-			removeCssClass(['#create'], 'hide');
-			updateForm('');
-		}
-	})
-}
-
-function replace(pattern, replacement, subject){
-	return subject.replace(pattern, replacement);
+	clear('#table');
+	addCssClass(['#form', '#send', '#edit', '#delete', '#update'], 'hide');
+	removeCssClass(['#create'], 'hide');
+	updateForm('');
 }
 
 $(document).ready(function(){
-	updateAll();
+	updateSelect();
 	$('#selecionar').change(function(){
 		selectFilter();
 	});
 	$('#delete').click(function(){
-		remove();
+		var selectValue=$('#selecionar').val();
+		request('', 'DELETE', http+selectValue);
 	})
 	$('#create').click(function(){
 		clear('#table');
@@ -169,7 +152,7 @@ $(document).ready(function(){
 		var file=dataFile();
 		form=dataFile();
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			request(file, 'POST', http.list);
+			request(file, 'POST', http);
 		}
 		else{alert('Por favor reveja os dados referentes ao produto.')}
 	})
@@ -183,7 +166,7 @@ $(document).ready(function(){
 	$('#edit').click(function(){
 		var file=dataFile();
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			request(file, 'PUT', http.product+$('#selecionar').val());
+			request(file, 'PUT', http+$('#selecionar').val());
 		}
 		else{alert('Por favor reveja os dados referentes ao produto.')}
 	})
