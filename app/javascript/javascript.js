@@ -1,8 +1,58 @@
+$(document).ready(function(){
+	updateSelect();
+	$('#selecionar').change(function(){
+		selectFilter();
+	});
+	$('#delete').click(function(){
+		var selectValue=$('#selecionar').val();
+		request('', 'DELETE', http+selectValue);
+	})
+	$('#create').click(function(){
+		clear('#table');
+		removeCssClass(['#form', '#send'], 'hide');
+		addCssClass(['#form', '#create', '#send'], 'size');
+		addCssClass(['#create'], 'hide');
+	})
+	$('#send').click(function(){
+		var file=dataFile();
+		form=dataFile();
+		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
+			request(file, 'POST', http);
+		}
+		else{alert(message.emptyField)}
+	})
+	$('#update').click(function(){
+		var file=dataFile();
+		removeCssClass(['#form', '#edit'], 'hide');
+		addCssClass(['#form', '#update', '#edit'], 'size');
+		addCssClass(['#update', '#delete'], 'hide');
+		clear('#table');
+	})
+	$('#edit').click(function(){
+		var file=dataFile();
+		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
+			request(file, 'PUT', http+$('#selecionar').val());
+		}
+		else{alert(message.emptyField)}
+	})
+	$('#name').keyup(function(){
+		regEx(/[^a-zçáâãéêíóôõú]/g, this);
+	})
+	$('#value').keyup(function(){
+		regEx(/[^0-9.]/g, this);
+	})
+	$('#quantity').keyup(function(){
+		regEx(/[^0-9]/g, this);
+	})
+})
+
 var http='http://localhost:3000/product/';
+
 var message={
 	emptyField: 'Por favor reveja os dados referentes ao produto.',
 	inactiveProduct: 'Este produto não está ativo'
 }
+
 var select={
 	select: '<option selected value="select">Selecione um produto...</option>',
 	all: '<option value="todos">todos</option>'
@@ -142,51 +192,3 @@ function regEx(expression, input){
 	var result=nome.replace(expression, '');
 	$(input).val(result);
 }
-
-$(document).ready(function(){
-	updateSelect();
-	$('#selecionar').change(function(){
-		selectFilter();
-	});
-	$('#delete').click(function(){
-		var selectValue=$('#selecionar').val();
-		request('', 'DELETE', http+selectValue);
-	})
-	$('#create').click(function(){
-		clear('#table');
-		removeCssClass(['#form', '#send'], 'hide');
-		addCssClass(['#form', '#create', '#send'], 'size');
-		addCssClass(['#create'], 'hide');
-	})
-	$('#send').click(function(){
-		var file=dataFile();
-		form=dataFile();
-		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			request(file, 'POST', http);
-		}
-		else{alert(message.emptyField)}
-	})
-	$('#update').click(function(){
-		var file=dataFile();
-		removeCssClass(['#form', '#edit'], 'hide');
-		addCssClass(['#form', '#update', '#edit'], 'size');
-		addCssClass(['#update', '#delete'], 'hide');
-		clear('#table');
-	})
-	$('#edit').click(function(){
-		var file=dataFile();
-		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			request(file, 'PUT', http+$('#selecionar').val());
-		}
-		else{alert(message.emptyField)}
-	})
-	$('#name').keyup(function(){
-		regEx(/[^a-zçáâãéêíóôõú]/g, this);
-	})
-	$('#value').keyup(function(){
-		regEx(/[^0-9.]/g, this);
-	})
-	$('#quantity').keyup(function(){
-		regEx(/[^0-9]/g, this);
-	})
-})
