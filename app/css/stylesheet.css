@@ -7,13 +7,15 @@
 	font-family:cursive;
 	padding:10px;
 }
+
 .size{
 	font-size:20px;
 }
 .content{
 	border-radius:5px;
 	border:2px solid black;
-	width:400px;
+	/*width:400px;*/
+	width: 550px;
 	margin:auto;
 	margin-top:20px;
 	box-shadow:0 0 10px 3px #000000 inset;

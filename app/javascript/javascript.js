@@ -4,8 +4,9 @@ $(document).ready(function(){
 	$("#value").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
 	
 	$('#pesquisar').click(function(){
+		var file=dataFile();
 		var identidade = $('#identidade').val();
-		request ('','GET',http);
+		requestPesquisa ('','GET',http+identidade);
 	});
 	
 	$('#selecionar').change(function(){
@@ -13,7 +14,9 @@ $(document).ready(function(){
 	});
 	$('#delete').click(function(){
 		var selectValue=$('#selecionar').val();
-		request('', 'DELETE', http+selectValue);
+		if (confirm(message.confirma)){
+			request('', 'DELETE', http+selectValue);
+		}
 	})
 	$('#create').click(function(){
 		clear('#table');
@@ -25,7 +28,9 @@ $(document).ready(function(){
 		var file=dataFile();
 		form=dataFile();
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			request(file, 'POST', http);
+			if (confirm(message.confirma)){
+				request(file, 'POST', http);
+			}
 		}
 		else{alert(message.emptyField)}
 	})
@@ -39,7 +44,9 @@ $(document).ready(function(){
 	$('#edit').click(function(){
 		var file=dataFile();
 		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			request(file, 'PUT', http+$('#selecionar').val());
+			if (confirm(message.confirma)){
+				request(file, 'PUT', http+$('#selecionar').val());
+			}
 		}
 		else{alert(message.emptyField)}
 	})
@@ -124,11 +131,22 @@ function updateProducts(data){
 
 function implementAllContent(data){
 	var result;
+	var totalEstoque = 0;
+	var valorTotalEstoque = 0;
+		
+    var valorTotal = 0;
+	var valorCadaProduto=0;
 	for (var c=0;c<data.length;c++){
 		if(data[c].status==='I') {result+='<tr style="color:red">';}
 		else {result+='<tr>';}
 		result+='<td>'+data[c].id+'</td>'+'<td>'+data[c].nome+'</td>'+'<td>R$ '+data[c].valor+'</td>'+'<td>'+data[c].status+'</td>'+'<td>'+data[c].estoque+'</td>'+'</tr>';
+		valorCadaProduto = data[c].valor * data[c].estoque;
+		valorTotal = valorCadaProduto + valorTotal;
+		totalEstoque = data[c].estoque;
+		valorTotalEstoque = valorTotalEstoque + totalEstoque;
 	}
+	result += '<td> Valor total: R$'+valorTotal+'</td>';
+	result += '<td> Estoque total:'+valorTotalEstoque+'</td>';
 	return result;
 }
 
@@ -151,6 +169,7 @@ function showContent(allData, url){
 			removeCssClass(['#create'], 'hide');
 			addCssClass(['#delete', '#update', '#send', '#edit'], 'hide');
 			updateForm('');
+			
 		}
 		else{
 			result=implementContent(data);
@@ -193,9 +212,7 @@ function dataFile(){
 	return file;
 }
 
-function confirmar (){
-	confirm(message.confirma);
-}
+
 function request(file, type, url){
 	$.ajax({
 		url: url,
@@ -203,14 +220,14 @@ function request(file, type, url){
 		data: file,
 		success: function(){
 			updateSelect();
-			confirmar ();
 		}
 	})
 	clear('#table');
-	addCssClass(['#form', '#send', '#edit', '#delete', '#update'], 'hide');
+	addCssClass(['#form', '#send', '#edit', '#delete', '#update', '#get'], 'hide');
 	removeCssClass(['#create'], 'hide');
 	updateForm('');
 }
+
 
 function regEx(expression, input){
 	var nome=$(input).val();
