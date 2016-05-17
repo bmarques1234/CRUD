@@ -3,6 +3,11 @@ $(document).ready(function(){
 	
 	$("#value").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
 	
+	$('#pesquisar').click(function(){
+		var identidade = $('#identidade').val();
+		request ('','GET',http);
+	});
+	
 	$('#selecionar').change(function(){
 		selectFilter();
 	});
@@ -122,22 +127,22 @@ function implementAllContent(data){
 	for (var c=0;c<data.length;c++){
 		if(data[c].status==='I') {result+='<tr style="color:red">';}
 		else {result+='<tr>';}
-		result+='<td>'+data[c].nome+'</td>'+'<td>R$ '+data[c].valor+'</td>'+'<td>'+data[c].status+'</td>'+'<td>'+data[c].estoque+'</td>'+'</tr>';
+		result+='<td>'+data[c].id+'</td>'+'<td>'+data[c].nome+'</td>'+'<td>R$ '+data[c].valor+'</td>'+'<td>'+data[c].status+'</td>'+'<td>'+data[c].estoque+'</td>'+'</tr>';
 	}
 	return result;
 }
 
 function implementContent(data){
 	var result;
-	result+='<tr>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
-	if(data.status==='I') {result+='<tr><td colspan="4" style="color:red">'+message.inactiveProduct+'</td></tr>';}
+	result+='<tr>'+ '<td>'+data.id+'</td>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
+	if(data.status==='I') {result+='<tr><td colspan="5" style="color:red">'+message.inactiveProduct+'</td></tr>';}
 	return result;
 }
 
 function showContent(allData, url){
 	$.getJSON(url, function(data){
 		clear('#table');
-		var result='<tr><th>Nome</th>'+'<th>Valor</th>'+'<th>Status</th>'+'<th>Estoque</th></tr>';
+		var result='<tr><th>Id</th>'+'<th>Nome</th>'+'<th>Valor</th>'+'<th>Status</th>'+'<th>Estoque</th></tr>';
 		$('#table').append(result);
 		if(allData===true){
 			updateProducts(data);
@@ -156,6 +161,7 @@ function showContent(allData, url){
 		}
 		$('#table').append(result);
 		addCssClass(['#conteudo'], 'content');
+
 	})
 	
 		
@@ -188,7 +194,7 @@ function dataFile(){
 }
 
 function confirmar (){
-	confirm(mensage.confirma);
+	confirm(message.confirma);
 }
 function request(file, type, url){
 	$.ajax({
