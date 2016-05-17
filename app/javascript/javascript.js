@@ -50,7 +50,8 @@ var http='http://localhost:3000/product/';
 
 var message={
 	emptyField: 'Por favor reveja os dados referentes ao produto.',
-	inactiveProduct: 'Este produto não está ativo'
+	inactiveProduct: 'Este produto não está ativo',
+	errorServer: 'Servidor Offline'
 }
 
 var select={
@@ -79,6 +80,7 @@ function updateSelect(){
 	$.getJSON(http, function(data){
 		updateProducts(data);
 	});
+
 }
 
 function updateForm(data){
@@ -146,6 +148,11 @@ function showContent(allData, url){
 		}
 		$('#table').append(result);
 		addCssClass(['#conteudo'], 'content');
+	})
+	
+		
+	.fail(function() {
+		alert(message.errorServer);
 	})
 }
 
