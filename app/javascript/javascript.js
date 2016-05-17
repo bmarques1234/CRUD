@@ -1,6 +1,8 @@
 $(document).ready(function(){
 	updateSelect();
 	
+	$("#value").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
+	
 	$('#selecionar').change(function(){
 		selectFilter();
 	});
@@ -52,7 +54,8 @@ var http='http://localhost:3000/product/';
 var message={
 	emptyField: 'Por favor reveja os dados referentes ao produto.',
 	inactiveProduct: 'Este produto não está ativo',
-	errorServer: 'Servidor Offline'
+	errorServer: 'Servidor Offline',
+	confirma: "Você tem certeza?"
 }
 
 var select={
@@ -184,6 +187,9 @@ function dataFile(){
 	return file;
 }
 
+function confirmar (){
+	confirm(mensage.confirma);
+}
 function request(file, type, url){
 	$.ajax({
 		url: url,
@@ -191,6 +197,7 @@ function request(file, type, url){
 		data: file,
 		success: function(){
 			updateSelect();
+			confirmar ();
 		}
 	})
 	clear('#table');
