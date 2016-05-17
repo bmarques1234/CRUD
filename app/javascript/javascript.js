@@ -1,5 +1,6 @@
 $(document).ready(function(){
 	updateSelect();
+	
 	$('#selecionar').change(function(){
 		selectFilter();
 	});
@@ -79,8 +80,12 @@ function clear(id){
 function updateSelect(){
 	$.getJSON(http, function(data){
 		updateProducts(data);
-	});
-
+	})
+	
+	.fail(function() {
+		alert(message.errorServer);
+		updateSelect();
+	})
 }
 
 function updateForm(data){
