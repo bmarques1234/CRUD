@@ -1,17 +1,16 @@
+
+
 $(document).ready(function(){
 	updateSelect();
-	
+	inicia();
 	$("#value").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
 	
 	$('#pesquisar').click(function(){
-		var file=dataFile();
-		var identidade = $('#identidade').val();
-		requestPesquisa ('','GET',http+identidade);
-	});
-	
-	$('#selecionar').change(function(){
 		selectFilter();
 	});
+
+//	$('#radio')
+	
 	$('#delete').click(function(){
 		var selectValue=$('#selecionar').val();
 		if (confirm(message.confirma)){
@@ -27,9 +26,12 @@ $(document).ready(function(){
 	$('#send').click(function(){
 		var file=dataFile();
 		form=dataFile();
-		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			if (confirm(message.confirma)){
-				request(file, 'POST', http);
+		var nome = $("#name").val();
+		if(nome !=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
+			if (nome.length > 2){
+				if (confirm(message.confirma)){
+					request(file, 'POST', http);
+				}
 			}
 		}
 		else{alert(message.emptyField)}
@@ -43,9 +45,12 @@ $(document).ready(function(){
 	})
 	$('#edit').click(function(){
 		var file=dataFile();
-		if($("#name").val()!=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
-			if (confirm(message.confirma)){
-				request(file, 'PUT', http+$('#selecionar').val());
+		var nome = $("#name").val();
+		if(nome !=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
+			if (nome.length > 2){
+				if (confirm(message.confirma)){
+					request(file, 'PUT', http+$('#selecionar').val());
+				}
 			}
 		}
 		else{alert(message.emptyField)}
@@ -61,18 +66,24 @@ $(document).ready(function(){
 	})
 })
 
-var http='http://localhost:3000/product/';
+var http='http://localhost:3000/product';
 
 var message={
 	emptyField: 'Por favor reveja os dados referentes ao produto.',
 	inactiveProduct: 'Este produto não está ativo',
 	errorServer: 'Servidor Offline',
-	confirma: "Você tem certeza?"
+	confirma: "Você tem certeza?",
+	tamanhoMinimo: "Minimo de três caracteres"
 }
 
 var select={
 	select: '<option selected value="select">Selecione um produto...</option>',
 	all: '<option value="todos">todos</option>'
+}
+
+function inicia(){
+	addCssClass(['#conteudo', '#selecionar', 'formPesquisa', '#identidade','#pesquisar'], 'hide');
+	addCssClass(['#update', '#delete', '#create','#send','#edit'], 'hide');
 }
 
 function removeCssClass(itens, classe){
@@ -152,7 +163,7 @@ function implementAllContent(data){
 
 function implementContent(data){
 	var result;
-	result+='<tr>'+ '<td>'+data.id+'</td>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
+	result+='<tr>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
 	if(data.status==='I') {result+='<tr><td colspan="5" style="color:red">'+message.inactiveProduct+'</td></tr>';}
 	return result;
 }
@@ -168,9 +179,9 @@ function showContent(allData, url){
 			result=implementAllContent(data);
 			removeCssClass(['#create'], 'hide');
 			addCssClass(['#delete', '#update', '#send', '#edit'], 'hide');
-			updateForm('');
-			
+			updateForm('');	
 		}
+
 		else{
 			result=implementContent(data);
 			removeCssClass(['#delete', '#update'], 'hide');
@@ -189,17 +200,34 @@ function showContent(allData, url){
 	})
 }
 
+
 function selectFilter(){
 	addCssClass(['#form', '#send'], 'hide');
+	var identidade=$('#identidade').val();
 	var selectValue=$('#selecionar').val();
-	if(selectValue==='select'){
-		addCssClass(['#send', '#edit', '#delete', '#update'], 'hide');
-		removeCssClass(['#create'], 'hide');
-		clear('#table');
-		updateForm('');
+	if (selectValue==='select'){
+		if(identidade == ""){
+			addCssClass(['#send', '#edit', '#delete', '#update'], 'hide');
+			removeCssClass(['#create'], 'hide');
+			clear('#table');
+			updateForm('');
+		}
+
+		else if (identidade != ""){
+			var identidade=$('#identidade').val();
+			valor = isNaN(identidade);
+			if (valor == false){
+				//request('','GET',http+identidade);
+				showContent(false, http+"/"+identidade);
+				console.log("oi");
+			}
+			/*else if (valor == true){
+				showContent(false,http+"?name="+identidade);
+			}*/
+		}
 	}
-	else if(selectValue==='todos') {showContent(true, http);}
-	else if(selectValue>0) {showContent(false, http+selectValue);}
+	else if(selectValue==='todos') {showContent(true, http+"/");}
+	else if(selectValue>0) {showContent(false, http+"/"+selectValue);}
 }
 
 function dataFile(){
