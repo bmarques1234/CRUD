@@ -35,9 +35,9 @@ $(document).ready(function(){
 	})
 	$('#create').click(function(){
 		clear('#table');
-		removeCssClass(['#form', '#send'], 'hide');
+		removeCssClass(['#form', '#send','#conteudo'], 'hide');
 		addCssClass(['#form', '#create', '#send'], 'size');
-		addCssClass(['#create'], 'hide');
+		addCssClass(['#create','#identidade','#pesquisar'], 'hide');
 	})
 	$('#send').click(function(){
 		var file=dataFile();
