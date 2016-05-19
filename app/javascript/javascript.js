@@ -2,19 +2,35 @@
 
 $(document).ready(function(){
 	updateSelect();
-	inicia();
+	//inicia();
 	$("#value").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
 	
 	$('#pesquisar').click(function(){
 		selectFilter();
 	});
 
-//	$('#radio')
+	if ($("#pesquisarId").is(':checked')){
+		inicia();
+	}
+	
+	$("#pesquisarId").click(function(){
+		pesquisaId();
+	})
+
+	$("#mostrarTudo").click(function(){
+		mostraTudo();
+	})
 	
 	$('#delete').click(function(){
 		var selectValue=$('#selecionar').val();
+		var identidade=$('#identidade').val();
 		if (confirm(message.confirma)){
-			request('', 'DELETE', http+selectValue);
+			if (identidade == ""){
+				request('', 'DELETE', http+selectValue);
+			}
+			else {
+				request('', 'DELETE', http+identidade);
+			}
 		}
 	})
 	$('#create').click(function(){
@@ -36,6 +52,7 @@ $(document).ready(function(){
 		}
 		else{alert(message.emptyField)}
 	})
+
 	$('#update').click(function(){
 		var file=dataFile();
 		removeCssClass(['#form', '#edit'], 'hide');
@@ -43,13 +60,20 @@ $(document).ready(function(){
 		addCssClass(['#update', '#delete'], 'hide');
 		clear('#table');
 	})
+
 	$('#edit').click(function(){
 		var file=dataFile();
+		var identidade = $("#identidade").val();
 		var nome = $("#name").val();
 		if(nome !=='' && $("#valor").val()!=='' && $("#quantity").val()!==''){
 			if (nome.length > 2){
 				if (confirm(message.confirma)){
-					request(file, 'PUT', http+$('#selecionar').val());
+					if(identidade == ""){
+						request(file, 'PUT', http+$('#selecionar').val());
+					}
+					else {
+						request(file, 'PUT', http+identidade);
+					}
 				}
 			}
 		}
@@ -66,7 +90,7 @@ $(document).ready(function(){
 	})
 })
 
-var http='http://localhost:3000/product';
+var http='http://localhost:3000/product/';
 
 var message={
 	emptyField: 'Por favor reveja os dados referentes ao produto.',
@@ -82,8 +106,19 @@ var select={
 }
 
 function inicia(){
-	addCssClass(['#conteudo', '#selecionar', 'formPesquisa', '#identidade','#pesquisar'], 'hide');
-	addCssClass(['#update', '#delete', '#create','#send','#edit'], 'hide');
+	addCssClass(['#conteudo', '#selecionar', 'formPesquisa'], 'hide');
+	//addCssClass(['#update', '#delete', '#create','#send','#edit'], 'hide');
+
+}
+
+function pesquisaId(){
+	removeCssClass(['#identidade','#pesquisar'],'hide');
+	addCssClass(['#selecionar','#conteudo'],'hide');
+}
+
+function mostraTudo(){
+	addCssClass(['#identidade','#conteudo'],'hide');
+	removeCssClass(['#selecionar','#pesquisar'],'hide');
 }
 
 function removeCssClass(itens, classe){
@@ -163,7 +198,7 @@ function implementAllContent(data){
 
 function implementContent(data){
 	var result;
-	result+='<tr>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
+	result+='<tr>'+'<td>'+data.id+'</td>'+'<td>'+data.nome+'</td>'+'<td>R$ '+data.valor+'</td>'+'<td>'+data.status+'</td>'+'<td>'+data.estoque+'</td>'+'</tr>';
 	if(data.status==='I') {result+='<tr><td colspan="5" style="color:red">'+message.inactiveProduct+'</td></tr>';}
 	return result;
 }
@@ -195,8 +230,8 @@ function showContent(allData, url){
 	})
 	
 		
-	.fail(function() {
-		alert(message.errorServer);
+	.error(function() {
+		confirm(message.inactiveProduct);
 	})
 }
 
@@ -205,29 +240,37 @@ function selectFilter(){
 	addCssClass(['#form', '#send'], 'hide');
 	var identidade=$('#identidade').val();
 	var selectValue=$('#selecionar').val();
-	if (selectValue==='select'){
-		if(identidade == ""){
-			addCssClass(['#send', '#edit', '#delete', '#update'], 'hide');
-			removeCssClass(['#create'], 'hide');
-			clear('#table');
-			updateForm('');
-		}
+	console.log(identidade);
+	console.log(selecionar);
+	if(identidade == "" && selectValue==='select'){
+		addCssClass(['#send', '#edit', '#delete', '#update'], 'hide');
+		removeCssClass(['#create'], 'hide');
+		clear('#table');
+		updateForm('');
+	}
 
-		else if (identidade != ""){
-			var identidade=$('#identidade').val();
-			valor = isNaN(identidade);
+	else if (identidade != ""){
+		if ($('#pesquisarId').is(':checked')){
+			console.log("oii");
+			removeCssClass(['#conteudo'], 'hide');
+			var valor = isNaN(identidade);
 			if (valor == false){
-				//request('','GET',http+identidade);
-				showContent(false, http+"/"+identidade);
-				console.log("oi");
+				showContent(false, http+identidade);
 			}
-			/*else if (valor == true){
-				showContent(false,http+"?name="+identidade);
-			}*/
 		}
 	}
-	else if(selectValue==='todos') {showContent(true, http+"/");}
-	else if(selectValue>0) {showContent(false, http+"/"+selectValue);}
+	else if(selectValue==='todos') {
+		showContent(true, http);
+		removeCssClass(['#conteudo'],'hide');
+	}
+	else if(selectValue>0) {
+		if ($('#mostrarTudo').is(':checked')){
+			showContent(false, http+selectValue);
+			removeCssClass(['#conteudo'],'hide');
+		}
+	}
+	$('#identidade').val('');
+	//$('#selecionar').val('select');
 }
 
 function dataFile(){

@@ -13,12 +13,14 @@
 		<div id="body">
 			<h1 class="white">Pesquisa de Produtos</h1>
 			<input type="radio" name="Pesquisar" value="Todos" id="mostrarTudo"><span class="white">Mostrar Todos</span></input>
-			<input type="radio" name="Pesquisar" value="PesquisaId" id="PesquisaId"><span class="white">Pesquisar por Id</span></input>
+			<input type="radio" name="Pesquisar" value="PesquisaId" id="pesquisarId" checked="true"><span class="white">Pesquisar por Id</<span></input>
+			<br>
 			<select id="selecionar" class="size"></select>
 			
 			<form id="formPesquisa">
 				<input type="text" placeholder="Id" id="identidade" class="size"> </input>
 			</form>
+			
 			<button id="pesquisar" class="size">Pesquisar</button>
 			<div id="conteudo" class="size">
 				<table id="table"></table>
